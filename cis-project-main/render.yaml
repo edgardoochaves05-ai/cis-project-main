@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: cis-project-backend
+    root: backend
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build && npx prisma generate
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
