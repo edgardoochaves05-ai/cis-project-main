@@ -14,8 +14,10 @@ import * as ResumeManagementMod from "./components/student/ResumeManagement";
 import * as ApplicationTrackingMod from "./components/student/ApplicationTracking";
 import * as AppointmentBookingMod from "./components/student/AppointmentBooking";
 import * as CareerEventsMod from "./components/student/CareerEvents";
-import * as AlumniTracerMod from "./components/student/AlumniTracer";
-import * as AlumniPortalMod from "./components/student/AlumniPortal";
+import * as AlumniTracerMod from "./components/AlumniTracer/AlumniTracer";
+import * as AlumniPortalMod from "./components/AlumniTracer/AlumniPortal";
+import * as SurveyDistributionMod from "./components/AlumniTracer/SurveyDistribution";
+import * as DataValidationMod from "./components/AlumniTracer/DataValidation";
 
 import * as EmployerDashboardMod from "./components/employer/EmployerDashboard";
 import * as EmployerProfileMod from "./components/employer/EmployerProfile";
@@ -52,6 +54,8 @@ const AppointmentBooking = pick(AppointmentBookingMod, "AppointmentBooking");
 const CareerEvents = pick(CareerEventsMod, "CareerEvents");
 const AlumniTracer = pick(AlumniTracerMod, "AlumniTracer");
 const AlumniPortal = pick(AlumniPortalMod, "AlumniPortal");
+const SurveyDistribution = pick(SurveyDistributionMod, "SurveyDistribution");
+const DataValidation = pick(DataValidationMod, "DataValidation");
 
 const EmployerDashboard = pick(EmployerDashboardMod, "EmployerDashboard");
 const EmployerProfile = pick(EmployerProfileMod, "EmployerProfile");
@@ -84,7 +88,9 @@ export const router = createBrowserRouter([
       { path: "student/appointments", Component: AppointmentBooking },
       { path: "student/events", Component: CareerEvents },
       { path: "student/alumni", Component: AlumniPortal },
+      { path: "student/alumni/distribution", Component: SurveyDistribution },
       { path: "student/alumni/survey", Component: AlumniTracer },
+      { path: "student/alumni/validation", Component: DataValidation },
 
       { path: "employer", Component: EmployerDashboard },
       { path: "employer/profile", Component: EmployerProfile },

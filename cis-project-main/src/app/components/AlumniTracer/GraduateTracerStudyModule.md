@@ -3,7 +3,7 @@
 ## Project Context
 **Course:** CIS 303 (Research and Final Project)
 **Project Title:** Analytics-Driven Evaluation of Career Resource Services Performance in Higher Education
-**Assigned Student:** Ochavez 
+**Assigned Student:** Ochaves 
 
 ## Overview
 Universities worldwide face challenges with low graduate employability and fragmented career services. The Graduate Tracer Study Module addresses the manual, inefficient tracking of alumni employment. It provides higher educational institutions with automated tools to trace graduate outcomes, which feeds critical analytics back into the enterprise architecture. This allows for a deeper evaluation of how well the curriculum prepares students for the workforce.

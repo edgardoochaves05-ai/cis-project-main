@@ -1,8 +1,47 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowLeft, Users, TrendingUp, Building2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+  ArrowLeft,
+  RefreshCw,
+  TrendingUp,
+  LayoutGrid,
+  ClipboardCheck,
+  PencilLine,
+} from 'lucide-react';
 import { useCareerService } from '../../context/CareerServiceContext';
 import type { AlumniRecord } from '../../context/CareerServiceContext';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' as const } },
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
+};
+
+const features = [
+  {
+    icon: LayoutGrid,
+    title: 'Dynamic Survey Dashboard',
+    description:
+      'A dedicated interface where alumni can state their current status — Employed, Unemployed, Self-Employed, or Pursuing Further Education.',
+  },
+  {
+    icon: ClipboardCheck,
+    title: 'Comprehensive Fields',
+    description:
+      'Tracks current company, position/title, estimated salary range, and the number of months it took to secure employment after graduation.',
+  },
+  {
+    icon: PencilLine,
+    title: 'Record Edits',
+    description:
+      'Alumni can return to update their records when they get promoted or change companies, providing real-time employment data back to the institution.',
+  },
+];
 
 export function AlumniTracer() {
   const { studentProfile, addAlumniRecord } = useCareerService();
@@ -28,7 +67,9 @@ export function AlumniTracer() {
         currentCompany: formData.currentCompany || undefined,
         currentPosition: formData.currentPosition || undefined,
         salary: formData.salary || undefined,
-        employedWithinMonths: formData.employedWithinMonths ? parseInt(formData.employedWithinMonths) : undefined,
+        employedWithinMonths: formData.employedWithinMonths
+          ? parseInt(formData.employedWithinMonths)
+          : undefined,
         surveyDate: new Date().toISOString(),
         verified: false,
       };
@@ -37,117 +78,276 @@ export function AlumniTracer() {
     }
   };
 
+  /* ── No profile state ── */
   if (!studentProfile) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="bg-white shadow-sm border-b">
+      <motion.div
+        className="min-h-screen bg-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.35 }}
+      >
+        <motion.div
+          className="bg-white border-b-2 border-[#FFB507]"
+          initial={{ y: -16, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+        >
           <div className="container mx-auto px-4 py-4">
-            <Link to="/student" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Alumni Employment Survey</h1>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <RefreshCw className="w-8 h-8 text-[#292929]" />
+                <div>
+                  <p className="text-xs font-bold text-[#FFB507] uppercase tracking-widest leading-none">
+                    Transaction 02
+                  </p>
+                  <h1 className="text-2xl font-bold text-[#292929]">Employment Status Update</h1>
+                </div>
+              </div>
+              <Link
+                to="/student/alumni"
+                className="flex items-center gap-2 text-[#292929] hover:text-[#FFB507] transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Alumni Portal
+              </Link>
+            </div>
           </div>
-        </div>
+        </motion.div>
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-            <p className="text-yellow-800">
-              Please <Link to="/student/profile" className="underline font-medium">complete your profile</Link> to submit your employment information.
+          <div className="bg-[#FFFDF0] border-2 border-[#FFB507] rounded-xl p-6">
+            <p className="text-[#292929] font-medium">
+              Please{' '}
+              <Link to="/student/profile" className="underline font-bold">
+                complete your profile
+              </Link>{' '}
+              first to submit your employment information.
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
+  /* ── Submitted success state ── */
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="bg-white shadow-sm border-b">
+      <motion.div
+        className="min-h-screen bg-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.35 }}
+      >
+        <motion.div
+          className="bg-white border-b-2 border-[#FFB507]"
+          initial={{ y: -16, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+        >
           <div className="container mx-auto px-4 py-4">
-            <Link to="/student" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Alumni Employment Survey</h1>
-          </div>
-        </div>
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <TrendingUp className="w-8 h-8 text-green-600" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <RefreshCw className="w-8 h-8 text-[#292929]" />
+                <div>
+                  <p className="text-xs font-bold text-[#FFB507] uppercase tracking-widest leading-none">
+                    Transaction 02
+                  </p>
+                  <h1 className="text-2xl font-bold text-[#292929]">Employment Status Update</h1>
+                </div>
+              </div>
+              <Link
+                to="/student/alumni"
+                className="flex items-center gap-2 text-[#292929] hover:text-[#FFB507] transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Alumni Portal
+              </Link>
             </div>
-            <h2 className="text-2xl font-bold text-green-900 mb-2">Thank You!</h2>
-            <p className="text-green-800 mb-6">
-              Your employment information has been submitted successfully. This data helps us improve our career services and support future students.
-            </p>
-            <Link to="/student" className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
-              Return to Dashboard
-            </Link>
           </div>
+        </motion.div>
+        <div className="container mx-auto px-4 py-16 max-w-4xl text-center">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, type: 'spring' }}
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#292929] mb-6"
+          >
+            <TrendingUp className="w-10 h-10 text-[#FFB507]" />
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-3xl font-bold text-[#292929] mb-3"
+          >
+            Submitted Successfully!
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-gray-600 mb-8 max-w-md mx-auto"
+          >
+            Your employment information has been recorded. This data helps improve career services
+            and support future students.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Link
+              to="/student/alumni"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#292929] text-white font-semibold rounded-lg hover:bg-[#FFB507] hover:text-[#292929] transition-colors"
+            >
+              Return to Alumni Portal
+            </Link>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
+  /* ── Main form view ── */
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
+    <motion.div
+      className="min-h-screen bg-white"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.35 }}
+    >
+      {/* Header */}
+      <motion.div
+        className="bg-white border-b-2 border-[#FFB507]"
+        initial={{ y: -16, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+      >
         <div className="container mx-auto px-4 py-4">
-          <Link to="/student" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2">
-            <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
-          </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Alumni Employment Survey</h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <motion.div whileHover={{ rotate: -8, scale: 1.05 }} transition={{ duration: 0.2 }}>
+                <RefreshCw className="w-8 h-8 text-[#292929]" />
+              </motion.div>
+              <div>
+                <p className="text-xs font-bold text-[#FFB507] uppercase tracking-widest leading-none">
+                  Transaction 02
+                </p>
+                <h1 className="text-2xl font-bold text-[#292929]">Employment Status Update</h1>
+              </div>
+            </div>
+            <motion.div whileHover={{ x: -2 }}>
+              <Link
+                to="/student/alumni"
+                className="flex items-center gap-2 text-[#292929] hover:text-[#FFB507] transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Alumni Portal
+              </Link>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-          <div className="flex items-start gap-3">
-            <Users className="w-5 h-5 text-blue-600 mt-0.5" />
-            <div>
-              <h3 className="font-bold text-blue-900 mb-1">Graduate Tracer Study</h3>
-              <p className="text-blue-800 text-sm">
-                Help us track the success of our graduates. Your information is confidential and will be used to improve our programs and support future students.
-              </p>
+
+        {/* Goal Banner */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="bg-[#292929] rounded-2xl px-8 py-6 mb-8 flex items-start gap-4"
+        >
+          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#FFB507] flex items-center justify-center mt-0.5">
+            <RefreshCw className="w-5 h-5 text-[#292929]" />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-[#FFB507] uppercase tracking-widest mb-1">Goal</p>
+            <p className="text-white text-sm leading-relaxed">
+              Allow graduates to easily report and update their employment progress over time,
+              providing real-time data back to the institution.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Feature Cards */}
+        <motion.div variants={fadeUp} initial="hidden" animate="show" transition={{ delay: 0.05 }}>
+          <h3 className="text-xl font-bold text-[#292929] mb-4">What You Can Do</h3>
+        </motion.div>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="grid md:grid-cols-3 gap-6 mb-10"
+        >
+          {features.map((f) => (
+            <motion.div
+              key={f.title}
+              variants={fadeUp}
+              whileHover={{ y: -4, borderColor: '#FFB507', boxShadow: '0 8px 20px rgba(0,0,0,0.07)' }}
+              className="bg-white rounded-xl border border-gray-200 p-6 transition-all"
+            >
+              <div className="w-11 h-11 rounded-lg bg-[#292929] flex items-center justify-center mb-4">
+                <f.icon className="w-5 h-5 text-[#FFB507]" />
+              </div>
+              <h4 className="font-bold text-[#292929] mb-2">{f.title}</h4>
+              <p className="text-sm text-gray-600 leading-relaxed">{f.description}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Form */}
+        <motion.div variants={fadeUp} initial="hidden" animate="show" transition={{ delay: 0.2 }}>
+          <h3 className="text-xl font-bold text-[#292929] mb-4">Submit Your Information</h3>
+        </motion.div>
+
+        <motion.form
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          transition={{ delay: 0.25 }}
+          onSubmit={handleSubmit}
+          className="bg-white rounded-2xl border-2 border-gray-200 p-8"
+        >
+          {/* Student Info */}
+          <div className="mb-6">
+            <h4 className="text-base font-bold text-[#292929] mb-3">Student Information</h4>
+            <div className="grid md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl">
+              <div>
+                <p className="text-xs text-gray-500 uppercase tracking-widest mb-0.5">Name</p>
+                <p className="font-semibold text-[#292929]">{studentProfile.name}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 uppercase tracking-widest mb-0.5">Major</p>
+                <p className="font-semibold text-[#292929]">{studentProfile.major}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 uppercase tracking-widest mb-0.5">Graduation Year</p>
+                <p className="font-semibold text-[#292929]">{studentProfile.graduationYear}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 uppercase tracking-widest mb-0.5">GPA</p>
+                <p className="font-semibold text-[#292929]">{studentProfile.gpa || 'N/A'}</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-8">
+          {/* Employment Info */}
           <div className="mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Student Information</h2>
-            <div className="grid md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
-              <div>
-                <p className="text-sm text-gray-600">Name</p>
-                <p className="font-medium text-gray-900">{studentProfile.name}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Major</p>
-                <p className="font-medium text-gray-900">{studentProfile.major}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Expected Graduation</p>
-                <p className="font-medium text-gray-900">{studentProfile.graduationYear}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">GPA</p>
-                <p className="font-medium text-gray-900">{studentProfile.gpa || 'N/A'}</p>
-              </div>
-            </div>
-          </div>
+            <h4 className="text-base font-bold text-[#292929] mb-4">Employment Information</h4>
 
-          <div className="mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Employment Information</h2>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employment Status *</label>
+            <div className="mb-5">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Employment Status <span className="text-[#FFB507]">*</span>
+              </label>
               <select
                 required
                 value={formData.employmentStatus}
-                onChange={(e) => setFormData({ ...formData, employmentStatus: e.target.value as any })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                onChange={(e) =>
+                  setFormData({ ...formData, employmentStatus: e.target.value as AlumniRecord['employmentStatus'] })
+                }
+                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FFB507] focus:border-[#FFB507] outline-none"
               >
                 <option value="employed">Employed</option>
                 <option value="unemployed">Unemployed</option>
@@ -158,41 +358,50 @@ export function AlumniTracer() {
 
             {formData.employmentStatus === 'employed' && (
               <>
-                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                <div className="grid md:grid-cols-2 gap-6 mb-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Current Company *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Current Company <span className="text-[#FFB507]">*</span>
+                    </label>
                     <input
                       type="text"
                       required
                       value={formData.currentCompany}
                       onChange={(e) => setFormData({ ...formData, currentCompany: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FFB507] focus:border-[#FFB507] outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Position/Title *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Position / Title <span className="text-[#FFB507]">*</span>
+                    </label>
                     <input
                       type="text"
                       required
                       value={formData.currentPosition}
-                      onChange={(e) => setFormData({ ...formData, currentPosition: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      onChange={(e) =>
+                        setFormData({ ...formData, currentPosition: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FFB507] focus:border-[#FFB507] outline-none"
                     />
                   </div>
                 </div>
+
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Salary Range (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Salary Range <span className="text-gray-400 font-normal">(Optional)</span>
+                    </label>
                     <select
                       value={formData.salary}
                       onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FFB507] focus:border-[#FFB507] outline-none"
                     >
                       <option value="">Prefer not to say</option>
                       <option value="Below ₱20,000">Below ₱20,000</option>
-                      <option value="₱20,000 - ₱30,000">₱20,000 - ₱30,000</option>
-                      <option value="₱30,000 - ₱50,000">₱30,000 - ₱50,000</option>
-                      <option value="₱50,000 - ₱75,000">₱50,000 - ₱75,000</option>
+                      <option value="₱20,000 - ₱30,000">₱20,000 – ₱30,000</option>
+                      <option value="₱30,000 - ₱50,000">₱30,000 – ₱50,000</option>
+                      <option value="₱50,000 - ₱75,000">₱50,000 – ₱75,000</option>
                       <option value="Above ₱75,000">Above ₱75,000</option>
                     </select>
                   </div>
@@ -204,9 +413,11 @@ export function AlumniTracer() {
                       type="number"
                       min="0"
                       value={formData.employedWithinMonths}
-                      onChange={(e) => setFormData({ ...formData, employedWithinMonths: e.target.value })}
-                      placeholder="e.g., 3"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      onChange={(e) =>
+                        setFormData({ ...formData, employedWithinMonths: e.target.value })
+                      }
+                      placeholder="e.g. 3"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FFB507] focus:border-[#FFB507] outline-none"
                     />
                   </div>
                 </div>
@@ -216,12 +427,12 @@ export function AlumniTracer() {
 
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="w-full md:w-auto px-8 py-3 bg-[#292929] text-white font-semibold rounded-lg hover:bg-[#FFB507] hover:text-[#292929] transition-colors"
           >
             Submit Employment Information
           </button>
-        </form>
+        </motion.form>
       </div>
-    </div>
+    </motion.div>
   );
 }
